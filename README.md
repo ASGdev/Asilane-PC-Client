@@ -1,4 +1,4 @@
-Asilane-pc-client
+Asilane pc client
 =================
 
-PC client for Asilane
+PC client for Asilane.
