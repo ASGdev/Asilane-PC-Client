@@ -43,8 +43,8 @@ public class Recognizer {
 	}
 
 	/**
-	 * Locale code. This Locale code must match the Locale of the speech to be recognized. ex. en-US ru-RU Setting
-	 * this to null will make Google use it's own Locale detection. This value is null by default.
+	 * Locale code. This Locale code must match the Locale of the speech to be recognized. ex. en-US ru-RU Setting this
+	 * to null will make Google use it's own Locale detection. This value is null by default.
 	 * 
 	 * @param Locale
 	 */
@@ -267,6 +267,9 @@ public class Recognizer {
 
 		// No caching
 		urlConn.setUseCaches(false);
+
+		// Timeout
+		urlConn.setConnectTimeout(7000);
 
 		// Specify the header content type.
 		urlConn.setRequestProperty("Content-Type", "audio/x-flac; rate=8000");

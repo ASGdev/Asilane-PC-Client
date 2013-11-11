@@ -5,7 +5,10 @@
 
 package com.asilane.core;
 
+import java.io.IOException;
+import java.net.UnknownServiceException;
 import java.util.Locale;
+import java.util.Properties;
 
 import javax.sound.sampled.AudioFileFormat;
 
@@ -22,15 +25,19 @@ import com.darkprograms.speech.recognizer.Recognizer;
  * @author walane
  */
 public class AsilanePCClient {
-	private static final String SAVED_WAV = "asilane-voice.wav";
+	private static final String SAVED_WAV = "asilane_voice.wav";
 	private Microphone microphone;
 	private final Asilane asilane;
+	protected Properties translationFile;
 
 	/**
 	 * Create a new Asilane instance
 	 */
 	public AsilanePCClient() {
 		asilane = new Asilane(null);
+
+		translationFile = new Properties();
+		loadTranslations();
 	}
 
 	/**
@@ -42,7 +49,7 @@ public class AsilanePCClient {
 			microphone = new Microphone(AudioFileFormat.Type.WAVE);
 			microphone.captureAudioToFile(SAVED_WAV);
 		} catch (final Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -52,7 +59,9 @@ public class AsilanePCClient {
 	 * @return The IA response if the sentence has been understood<br>
 	 *         null if not
 	 */
-	public String closeRecordAndHandleSentence() {
+	public Response closeRecordAndHandleSentence() {
+		Response iaResponse;
+
 		try {
 			// Stop microphone capture
 			microphone.close();
@@ -63,21 +72,22 @@ public class AsilanePCClient {
 		// Transform voice into text
 		final String textSpeeched = speechToText(SAVED_WAV);
 		if (textSpeeched != null) {
-			Response iaResponse;
 			// Understand what means the sentence
-			iaResponse = asilane.handleSentence(textSpeeched);
+			try {
+				iaResponse = asilane.handleSentence(textSpeeched);
+			} catch (final UnknownServiceException e) {
+				iaResponse = new Response(translationFile.get("error_understanding").toString());
+				iaResponse.setError(true);
+			}
 
-			// Say the response
-			textToSpeech(iaResponse.getSpeechedResponse());
-			// Return the response;
-			return iaResponse.getDisplayedResponse();
+			return iaResponse;
 		}
 
 		// If nothing has been heard
-		if (asilane.getLocale() == Locale.FRANCE) {
-			return "Rien n'a été entendu.";
-		}
-		return "Nothing has been head.";
+		iaResponse = new Response(translationFile.getProperty("error_nothing_heard"));
+		iaResponse.setError(true);
+
+		return iaResponse;
 	}
 
 	/**
@@ -93,6 +103,7 @@ public class AsilanePCClient {
 		try {
 			final GoogleResponse response = recognizer.getRecognizedDataForWave(waveFile);
 			System.out.println(response.getOtherPossibleResponses());
+
 			return response.getResponse();
 		} catch (final Exception e) {
 			return null;
@@ -104,7 +115,7 @@ public class AsilanePCClient {
 	 * 
 	 * @param textToSpeech
 	 */
-	private void textToSpeech(final String textToSpeech) {
+	public void textToSpeech(final String textToSpeech) {
 		TextToSpeechThread.getInstance().textToSpeech(textToSpeech, asilane.getLocale());
 		new Thread(TextToSpeechThread.getInstance()).start();
 	}
@@ -121,6 +132,17 @@ public class AsilanePCClient {
 	}
 
 	/**
+	 * Load translation corresponding to the Asilane language
+	 */
+	public void loadTranslations() {
+		try {
+			translationFile.load(getClass().getResourceAsStream("/i18n_client/" + asilane.getLocale().toLanguageTag() + ".properties"));
+		} catch (final IOException e) {
+			new RuntimeException(e);
+		}
+	}
+
+	/**
 	 * @return the asilane
 	 */
 	public Asilane getAsilane() {
@@ -133,6 +155,13 @@ public class AsilanePCClient {
 	 */
 	public void setLocale(final Locale lang) {
 		asilane.setLocale(lang);
+	}
+
+	/**
+	 * @return the translationFile
+	 */
+	public Properties getTranslationFile() {
+		return translationFile;
 	}
 
 	/**
@@ -163,7 +192,11 @@ public class AsilanePCClient {
 			} else {
 				final AsilanePCClient asilane = new AsilanePCClient();
 				asilane.setLocale(lang);
-				System.out.println(asilane.getAsilane().handleSentence(args[0]).getSpeechedResponse());
+				try {
+					System.out.println(asilane.getAsilane().handleSentence(args[0]).getSpeechedResponse());
+				} catch (final UnknownServiceException e) {
+					System.err.println(asilane.translationFile.get("error_understanding"));
+				}
 			}
 		} else {
 			new GUI(new AsilanePCClient());
