@@ -4,6 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/javaFlacEncoder.jar"/>
 	<classpathentry kind="lib" path="lib/JLayer.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Asilane"/>
+	<classpathentry kind="lib" path="lib/Asilane.jar" sourcepath="/Asilane"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -16,7 +16,6 @@ import com.asilane.core.facade.Response;
 import com.asilane.gui.GUI;
 import com.darkprograms.speech.microphone.Microphone;
 import com.darkprograms.speech.microphone.Microphone.CaptureState;
-import com.darkprograms.speech.recognizer.GoogleResponse;
 import com.darkprograms.speech.recognizer.Recognizer;
 
 /**
@@ -35,7 +34,6 @@ public class AsilanePCClient {
 	 */
 	public AsilanePCClient() {
 		asilane = new Asilane(null);
-
 		translationFile = new Properties();
 		loadTranslations();
 	}
@@ -101,10 +99,7 @@ public class AsilanePCClient {
 		recognizer.setLocale(asilane.getLocale().toString().substring(0, 2));
 
 		try {
-			final GoogleResponse response = recognizer.getRecognizedDataForWave(waveFile);
-			System.out.println(response.getOtherPossibleResponses());
-
-			return response.getResponse();
+			return recognizer.getRecognizedDataForWave(waveFile).getResponse();
 		} catch (final Exception e) {
 			return null;
 		}
