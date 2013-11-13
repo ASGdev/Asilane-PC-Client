@@ -30,9 +30,9 @@ public class GUI extends Container {
 
 	private static final String[] LANGUAGES = new String[] { "English", "Français" };
 
-	private static final String THEME_IMAGE = "/com/asilane/gui/res/theme.jpg";
+	private static final String THEME_IMAGE = "/com/asilane/gui/res/theme.png";
 	private static final String MICRO_HOVER_IMAGE = "/com/asilane/gui/res/micro-hover.png";
-	private static final String VALID_HOVER_IMAGE = "/com/asilane/gui/res/valid-hover.jpg";
+	private static final String VALID_HOVER_IMAGE = "/com/asilane/gui/res/valid-hover.png";
 
 	private final AsilanePCClient asilane;
 	private JFrame frmAsilane;

@@ -178,7 +178,7 @@ public class AsilanePCClient {
 			if (args.length == 1 || args[1].toLowerCase().trim().equals("english")) {
 				lang = Locale.ENGLISH;
 			} else if (args[1].toLowerCase().trim().equals("french")) {
-				lang = Locale.FRANCE;
+				lang = Locale.FRENCH;
 			}
 
 			// Handle sentence from args
