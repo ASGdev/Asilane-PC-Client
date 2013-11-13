@@ -1,8 +1,6 @@
 Asilane pc client
 =================
 
-Client Asilane pour PC.
-
 Installation
 ------------
 
