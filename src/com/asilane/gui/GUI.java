@@ -128,6 +128,7 @@ public class GUI extends Container {
 		frmAsilane.getContentPane().add(validButtonHover);
 
 		btnRecordHover = new JLabel();
+		btnRecordHover.setFocusable(false);
 		btnRecordHover.setEnabled(false);
 		btnRecordHover.setIcon(new ImageIcon(GUI.class.getResource(MICRO_HOVER_IMAGE)));
 		frmAsilane.getContentPane().add(btnRecordHover);
@@ -170,7 +171,7 @@ public class GUI extends Container {
 	 */
 	public void switchRecordButtonState() {
 		if (btnRecordHover.isEnabled()) {
-			btnRecordHover.setEnabled(true);
+			btnRecordHover.setEnabled(false);
 			btnRecordHover.setBounds(0, 0, 0, 0);
 		} else {
 			btnRecordHover.setEnabled(true);
