@@ -78,6 +78,7 @@ public class GUI extends Container {
 		frmAsilane.getContentPane().add(lblSlogan);
 
 		btnRecord = new JButton();
+		btnRecord.setFocusable(false);
 		btnRecord.setBounds(756, 497, 100, 100);
 		btnRecord.setForeground(null);
 		btnRecord.setContentAreaFilled(false);
@@ -108,6 +109,7 @@ public class GUI extends Container {
 
 		validBtn = new JButton(asilane.getTranslationFile().getProperty("valid_button_text"));
 		validBtn.setFont(new Font("Trebuchet MS", Font.BOLD, 18));
+		validBtn.setFocusable(false);
 		validBtn.setForeground(SystemColor.text);
 		validBtn.setBorder(null);
 		validBtn.setContentAreaFilled(false);
@@ -127,8 +129,6 @@ public class GUI extends Container {
 
 		btnRecordHover = new JLabel();
 		btnRecordHover.setEnabled(false);
-		btnRecordHover.setForeground(null);
-		btnRecordHover.setBackground(null);
 		btnRecordHover.setIcon(new ImageIcon(GUI.class.getResource(MICRO_HOVER_IMAGE)));
 		frmAsilane.getContentPane().add(btnRecordHover);
 
@@ -170,11 +170,11 @@ public class GUI extends Container {
 	 */
 	public void switchRecordButtonState() {
 		if (btnRecordHover.isEnabled()) {
-			btnRecordHover.setEnabled(false);
+			btnRecordHover.setEnabled(true);
 			btnRecordHover.setBounds(0, 0, 0, 0);
 		} else {
 			btnRecordHover.setEnabled(true);
-			btnRecordHover.setBounds(756, 497, 117, 100);
+			btnRecordHover.setBounds(761, 510, 70, 70);
 		}
 	}
 }
