@@ -53,9 +53,7 @@ public class FlacEncoder {
 			flacEncoder.setOutputStream(flacOutputStream);
 
 			flacEncoder.openFLACStream();
-			// if (audioInputStream.getFrameLength() <= 0) {
-			// return;
-			// }
+
 			final int[] sampleData = new int[(int) audioInputStream.getFrameLength()];
 
 			final byte[] samplesIn = new byte[frameSize];
