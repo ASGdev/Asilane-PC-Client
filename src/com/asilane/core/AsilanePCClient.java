@@ -33,7 +33,7 @@ public class AsilanePCClient {
 	 * Create a new Asilane instance
 	 */
 	public AsilanePCClient() {
-		asilane = new Asilane(null);
+		asilane = new Asilane(new PCEnvironmentTools());
 		translationFile = new Properties();
 		loadTranslations();
 	}
