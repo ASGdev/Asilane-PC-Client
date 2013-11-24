@@ -12,6 +12,7 @@ import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 
 /**
@@ -56,5 +57,28 @@ public class PCEnvironmentTools implements EnvironmentTools {
 		}
 
 		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.asilane.core.EnvironmentTools#mail(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public boolean mail(final String dest, final String subject, final String message) {
+		if (!Desktop.isDesktopSupported() || !Desktop.getDesktop().isSupported(Desktop.Action.MAIL)) {
+			return false;
+		}
+
+		try {
+			Desktop.getDesktop().mail(
+					URI.create("mailto:" + dest + "?subject=" + AsilaneUtils.encode(subject) + "&body=" + AsilaneUtils.encode(message)));
+		} catch (final UnsupportedEncodingException e) {
+			return false;
+		} catch (final IOException e) {
+			return false;
+		}
+
+		return true;
 	}
 }
