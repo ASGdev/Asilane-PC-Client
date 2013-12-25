@@ -58,8 +58,8 @@ public class TextToSpeechThread implements Runnable {
 	@Override
 	public void run() {
 		try {
-			final Synthesiser synthesiser = new Synthesiser();
-			player = new Player(synthesiser.getMP3Data(textToSpeech, lang.toString().substring(0, 2)));
+			final Synthesiser synthesiser = new Synthesiser(lang.toString());
+			player = new Player(synthesiser.getMP3Data(textToSpeech));
 			playerThread = new PlayerThread(player);
 			playerThread.start();
 		} catch (final Exception e) {

@@ -95,8 +95,7 @@ public class AsilanePCClient {
 	 *         null if not
 	 */
 	private String speechToText(final String waveFile) {
-		final Recognizer recognizer = new Recognizer();
-		recognizer.setLocale(asilane.getLocale().toString().substring(0, 2));
+		final Recognizer recognizer = new Recognizer(asilane.getLocale().toString());
 
 		try {
 			return recognizer.getRecognizedDataForWave(waveFile).getResponse();
@@ -111,7 +110,7 @@ public class AsilanePCClient {
 	 * @param textToSpeech
 	 */
 	public void textToSpeech(final String textToSpeech) {
-		TextToSpeechThread.getInstance().textToSpeech(textToSpeech, asilane.getLocale());
+		TextToSpeechThread.getInstance().textToSpeech(textToSpeech, getAsilane().getLocale());
 		new Thread(TextToSpeechThread.getInstance()).start();
 	}
 
@@ -131,7 +130,7 @@ public class AsilanePCClient {
 	 */
 	public void loadTranslations() {
 		try {
-			translationFile.load(getClass().getResourceAsStream("/i18n_client/" + asilane.getLocale().toLanguageTag() + ".properties"));
+			translationFile.load(getClass().getResourceAsStream("/i18n_client/" + asilane.getLocale().toString() + ".properties"));
 		} catch (final IOException e) {
 			new RuntimeException(e);
 		}

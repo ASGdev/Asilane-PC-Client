@@ -14,6 +14,7 @@ import java.awt.datatransfer.Transferable;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.util.Date;
 
 /**
  * PC environment tools
@@ -80,5 +81,15 @@ public class PCEnvironmentTools implements EnvironmentTools {
 		}
 
 		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.asilane.core.EnvironmentTools#addCalendarEvent(java.lang.String, java.util.Date, java.util.Date)
+	 */
+	@Override
+	public void addCalendarEvent(final String title, final Date beginDate, final Date endDate) {
+		throw new UnsupportedOperationException("You can do this only if you are on a Android device");
 	}
 }

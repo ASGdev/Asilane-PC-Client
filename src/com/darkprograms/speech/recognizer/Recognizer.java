@@ -7,12 +7,13 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.Charset;
 
-/**
+/***************************************************************
  * Class that submits FLAC audio and retrieves recognized text
  * 
- * @author Luke Kuza, Duncan Jauncey
- */
+ * @author Luke Kuza, Duncan Jauncey, Aaron Gokaslan
+ **************************************************************/
 public class Recognizer {
 
 	/**
@@ -21,39 +22,58 @@ public class Recognizer {
 	private static final String GOOGLE_RECOGNIZER_URL = "https://www.google.com/speech-api/v1/recognize?xjerr=1&client=chromium";
 
 	private boolean profanityFilter = true;
-	private String Locale = null;
-
-	public static final String LANG_US_ENGLISH = "en-US";
-	public static final String LANG_UK_ENGLISH = "en-GB";
-	public static final String LANG_FR_FRENCH = "fr-FR";
+	private String language = null;
 
 	/**
 	 * Constructor
+	 * 
+	 * @param Language
 	 */
-	public Recognizer() {
+	public Recognizer(final String language) {
+		this.language = language;
 	}
 
 	/**
-	 * Enable/disable Google's profanity filter (on by default).
+	 * Constructor
 	 * 
 	 * @param profanityFilter
 	 */
-	public void setProfanityFilter(final boolean profanityFilter) {
+	public Recognizer(final boolean profanityFilter) {
 		this.profanityFilter = profanityFilter;
 	}
 
 	/**
-	 * Locale code. This Locale code must match the Locale of the speech to be recognized. ex. en-US ru-RU Setting this
-	 * to null will make Google use it's own Locale detection. This value is null by default.
+	 * Language code. This language code must match the language of the speech to be recognized. ex. en-US ru-RU This
+	 * value is null by default.
 	 * 
-	 * @param Locale
+	 * @param language
+	 *            The language code.
 	 */
-	public void setLocale(final String Locale) {
-		this.Locale = Locale;
+	public void setLanguage(final String language) {
+		this.language = language;
 	}
 
 	/**
-	 * Get recognized data from a Wave file. This method will encode the wave file to a FLAC
+	 * Returns the state of profanityFilter which enables/disables Google's profanity filter (on by default).
+	 * 
+	 * @return profanityFilter
+	 */
+	public boolean getProfanityFilter() {
+		return profanityFilter;
+	}
+
+	/**
+	 * Language code. This language code must match the language of the speech to be recognized. ex. en-US ru-RU This
+	 * value is null by default.
+	 * 
+	 * @return language the Google language
+	 */
+	public String getLanguage() {
+		return language;
+	}
+
+	/**
+	 * Get recognized data from a Wave file. This method will encode the wave file to a FLAC file
 	 * 
 	 * @param waveFile
 	 *            Wave file to recognize
@@ -129,7 +149,7 @@ public class Recognizer {
 
 	/**
 	 * Get recognized data from a Wave file. This method will encode the wave file to a FLAC. This method will
-	 * automatically set the Locale to en-US, or English
+	 * automatically set the language to en-US, or English
 	 * 
 	 * @param waveFile
 	 *            Wave file to recognize
@@ -143,7 +163,7 @@ public class Recognizer {
 
 	/**
 	 * Get recognized data from a Wave file. This method will encode the wave file to a FLAC. This method will
-	 * automatically set the Locale to en-US, or English
+	 * automatically set the language to en-US, or English
 	 * 
 	 * @param waveFile
 	 *            Wave file to recognize
@@ -156,7 +176,7 @@ public class Recognizer {
 	}
 
 	/**
-	 * Get recognized data from a FLAC file. This method will automatically set the Locale to en-US, or English
+	 * Get recognized data from a FLAC file. This method will automatically set the language to en-US, or English
 	 * 
 	 * @param flacFile
 	 *            FLAC file to recognize
@@ -169,7 +189,7 @@ public class Recognizer {
 	}
 
 	/**
-	 * Get recognized data from a FLAC file. This method will automatically set the Locale to en-US, or English
+	 * Get recognized data from a FLAC file. This method will automatically set the language to en-US, or English
 	 * 
 	 * @param flacFile
 	 *            FLAC file to recognize
@@ -186,10 +206,10 @@ public class Recognizer {
 	 * 
 	 * @param rawResponse
 	 *            The raw, unparsed response from Google
-	 * @return Returns the parsed response. Index 0 is response, Index 1 is confidence score
+	 * @return Returns the parsed response in the form of a Google Response.
 	 */
 	private void parseResponse(final String rawResponse, final GoogleResponse googleResponse) {
-		if (!rawResponse.contains("utterance")) {
+		if (rawResponse == null || !rawResponse.contains("utterance")) {
 			return;
 		}
 
@@ -246,9 +266,9 @@ public class Recognizer {
 		BufferedReader br;
 
 		final StringBuilder sb = new StringBuilder(GOOGLE_RECOGNIZER_URL);
-		if (Locale != null) {
+		if (language != null) {
 			sb.append("&lang=");
-			sb.append(Locale);
+			sb.append(language);
 		}
 		if (!profanityFilter) {
 			sb.append("&pfilter=0");
@@ -268,9 +288,6 @@ public class Recognizer {
 		// No caching
 		urlConn.setUseCaches(false);
 
-		// Timeout
-		urlConn.setConnectTimeout(7000);
-
 		// Specify the header content type.
 		urlConn.setRequestProperty("Content-Type", "audio/x-flac; rate=8000");
 
@@ -289,7 +306,7 @@ public class Recognizer {
 		outputStream.close();
 
 		// Get response data.
-		br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(), "UTF-8"));
+		br = new BufferedReader(new InputStreamReader(urlConn.getInputStream(), Charset.forName("UTF-8")));
 
 		final String response = br.readLine();
 
@@ -324,5 +341,4 @@ public class Recognizer {
 		}
 		return s.substring(start, end);
 	}
-
 }
